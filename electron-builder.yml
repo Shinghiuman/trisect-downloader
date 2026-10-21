@@ -1,0 +1,19 @@
+appId: com.trisect.downloader
+productName: TrisectDownloader
+directories:
+  app: build/app
+  output: dist-portable
+files:
+  - "**/*"
+  - "!test{,/**}"
+  - "!dist{,/**}"
+asar: false
+npmRebuild: false
+win:
+  target:
+    - target: portable
+      arch: [x64]
+portable:
+  artifactName: "TrisectDownloader-${version}-portable.exe"
+  unpackDirName: TrisectDownloader
+compression: normal

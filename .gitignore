@@ -1,0 +1,28 @@
+# 依赖
+node_modules/
+
+# 打包产物与打包暂存目录
+dist/
+dist-portable/
+build/
+*.exe
+*.zip
+
+# 运行时数据
+data/
+downloads/
+test/app-data/
+test/app-downloads/
+test/pkg-data/
+test/pkg-downloads/
+test/pure-dl/
+
+# 测试种子数据（体积大，可用 test/swarm.js 重新生成）
+test/out/seed-data/
+test/out2/
+test/out3/
+
+# 日志与临时文件
+*.log
+.DS_Store
+Thumbs.db

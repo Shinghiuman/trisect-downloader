@@ -1,0 +1,10 @@
+{
+  "fileName": "sample-payload-6MB.bin",
+  "filePath": "D:\\WorkBuddy\\2026-10-21-22-35-30\\downloader\\test\\out\\seed-data\\sample-payload-6MB.bin",
+  "size": 6291456,
+  "sha1": "4511f9c05535dab262349097bb5e32fa22ca3987",
+  "infoHash": "40627b4d7ab85eab8f0a9c4872759a21debc724a",
+  "torrentFile": "D:\\WorkBuddy\\2026-10-21-22-35-30\\downloader\\test\\out\\test.torrent",
+  "magnet": "magnet:?xt=urn:btih:40627b4d7ab85eab8f0a9c4872759a21debc724a&dn=sample-payload-6MB.bin&tr=http%3A%2F%2F127.0.0.1%3A8000%2Fannounce",
+  "announce": "http://127.0.0.1:8000/announce"
+}

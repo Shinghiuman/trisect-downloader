@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>三栖下载器 · ED2K / BT / HTTP</title>
+<link rel="stylesheet" href="/style.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='25' font-size='24'%3E%E2%AC%87%EF%B8%8F%3C/text%3E%3C/svg%3E" />
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">⇩</div>
+      <div>
+        <h1>三栖下载器</h1>
+        <p>Trisect Downloader</p>
+      </div>
+    </div>
+
+    <div class="meters">
+      <div class="meter">
+        <span class="k">总速度</span>
+        <span class="v" id="mSpeed">0 B/s</span>
+      </div>
+      <div class="meter">
+        <span class="k">活动任务</span>
+        <span class="v" id="mActive">0</span>
+      </div>
+      <div class="meter">
+        <span class="k">已完成</span>
+        <span class="v" id="mDone">0</span>
+      </div>
+    </div>
+
+    <canvas id="spark" width="260" height="48" title="总速度趋势"></canvas>
+
+    <div class="top-actions">
+      <label class="sel-wrap" title="同时进行的下载任务数">
+        <span>并发</span>
+        <select id="concurrency">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+        </select>
+      </label>
+      <button class="btn primary" id="addBtn"><span>＋</span> 新建任务</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="side-label">下载库</div>
+      <nav id="catNav">
+        <button class="nav-item active" data-cat="all"><i class="dot all"></i><span>全部任务</span><b id="cAll">0</b></button>
+        <button class="nav-item" data-cat="active"><i class="dot down"></i><span>正在下载</span><b id="cActive">0</b></button>
+        <button class="nav-item" data-cat="unfinished"><i class="dot pause"></i><span>未完成</span><b id="cUnfinished">0</b></button>
+        <button class="nav-item" data-cat="paused"><i class="dot pause"></i><span>已暂停</span><b id="cPaused">0</b></button>
+        <button class="nav-item" data-cat="completed"><i class="dot ok"></i><span>已完成</span><b id="cDone">0</b></button>
+        <button class="nav-item" data-cat="error"><i class="dot err"></i><span>失败</span><b id="cErr">0</b></button>
+      </nav>
+
+      <div class="side-label">按协议筛选</div>
+      <div class="proto-filter" id="protoFilter">
+        <button class="pchip active" data-proto="all">全部</button>
+        <button class="pchip http" data-proto="http">HTTP</button>
+        <button class="pchip bt" data-proto="bt">BT / 磁力</button>
+        <button class="pchip ed2k" data-proto="ed2k">eD2K</button>
+      </div>
+
+      <div class="side-label">引擎状态</div>
+      <div class="engines">
+        <div class="eng"><i class="pdot http"></i>HTTP(S) <em id="engHttp">原生</em></div>
+        <div class="eng"><i class="pdot bt"></i>BitTorrent <em id="engBt">内置</em></div>
+        <div class="eng"><i class="pdot ed2k"></i>eD2K <em id="engEd2k">内置</em></div>
+      </div>
+
+      <div class="side-foot">
+        <button class="ghost" data-bulk="resumeAll">全部开始</button>
+        <button class="ghost" data-bulk="pauseAll">全部暂停</button>
+        <button class="ghost danger" data-bulk="clearCompleted">清除已完成</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="toolbar">
+        <div class="tb-title">
+          <h2 id="viewTitle">全部任务</h2>
+          <span class="tb-sub" id="viewSub">0 个任务</span>
+        </div>
+        <div class="search">
+          <svg viewBox="0 0 24 24" width="15" height="15"><path d="M10 4a6 6 0 104.2 10.3l4.2 4.2 1.4-1.4-4.2-4.2A6 6 0 0010 4zm0 2a4 4 0 110 8 4 4 0 010-8z" fill="currentColor"/></svg>
+          <input id="search" placeholder="搜索任务名称 / 链接 / 哈希" />
+        </div>
+        <div class="tb-actions">
+          <button class="btn" data-bulk="resumeAll">▶ 开始全部</button>
+          <button class="btn" data-bulk="pauseAll">⏸ 暂停全部</button>
+        </div>
+      </div>
+
+      <div class="table-head">
+        <span class="th-proto">协议</span>
+        <span class="th-name">任务</span>
+        <span class="th-progress">进度</span>
+        <span class="th-speed">速度 / 剩余</span>
+        <span class="th-act">操作</span>
+      </div>
+
+      <div class="list" id="list"></div>
+      <div class="empty" id="empty" hidden>
+        <div class="empty-ico">⇩</div>
+        <h3>这里还没有任务</h3>
+        <p>支持 ed2k:// 、magnet:? 与 http(s):// 三种链接，可一次粘贴多条批量添加。</p>
+        <button class="btn primary" id="emptyAdd">新建任务</button>
+      </div>
+    </main>
+
+    <aside class="drawer" id="drawer">
+      <div class="drawer-head">
+        <span>任务详情</span>
+        <button class="icon-btn" id="closeDrawer">✕</button>
+      </div>
+      <div class="drawer-body" id="drawerBody"></div>
+    </aside>
+  </div>
+</div>
+
+<!-- 新建任务 -->
+<div class="modal" id="modal" hidden>
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3>新建下载任务</h3>
+      <button class="icon-btn" id="closeModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <label class="field-label">下载链接 <span>每行一条，支持三种协议混贴</span></label>
+      <textarea id="links" spellcheck="false" placeholder="ed2k://|file|example.iso|734003200|ABCDEF0123456789ABCDEF0123456789|/
+magnet:?xt=urn:btih:8f2c1d7a4e9b3c6d5a1f0e2b7c8d9a3f5e6b1c4d&dn=Example
+https://example.com/files/ubuntu.iso"></textarea>
+      <div class="detect" id="detect">
+        <span class="detect-idle">等待输入链接…</span>
+      </div>
+
+      <label class="field-label">种子文件 <span>.torrent，可多选或直接拖入窗口</span></label>
+      <div class="torrent-drop" id="dropzone">
+        <input type="file" id="torrentFile" accept=".torrent,application/x-bittorrent" multiple hidden />
+        <span id="dropHint">拖拽 .torrent 到此处，或 <b>点击选择文件</b></span>
+      </div>
+      <div class="torrent-chips" id="torrentChips"></div>
+
+      <label class="field-label">保存目录</label>
+      <input id="savePath" class="text-input" readonly value="downloads/" />
+      <label class="check"><input type="checkbox" id="autoStart" checked /> 添加后立即开始下载</label>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="cancelModal">取消</button>
+      <button class="btn primary" id="submitModal">开始下载</button>
+    </div>
+  </div>
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>

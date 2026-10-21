@@ -1,0 +1,27 @@
+{
+  "name": "trisect-downloader",
+  "productName": "三栖下载器",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ED2K / BT / HTTP 三协议下载器（Electron 桌面版）",
+  "main": "electron/main.js",
+  "author": "Trisect",
+  "license": "MIT",
+  "scripts": {
+    "start": "node server.js",
+    "app": "electron .",
+    "pack": "electron-packager . TrisectDownloader --platform=win32 --arch=x64 --out=dist --overwrite --prune=true --ignore=\"^/(test|dist|data|downloads|\\.git)\" --app-version=1.0.0 --win32metadata.CompanyName=Trisect --win32metadata.FileDescription=\"Trisect Downloader - ED2K/BT/HTTP\"",
+    "swarm": "node test/swarm.js",
+    "verify:bt": "node test/verify-bt.js",
+    "verify:magnet": "node test/verify-magnet.js"
+  },
+  "dependencies": {
+    "webtorrent": "^3.0.21"
+  },
+  "devDependencies": {
+    "@electron/packager": "^18.3.6",
+    "bittorrent-tracker": "^11.2.3",
+    "electron": "^33.4.11",
+    "electron-builder": "^25.1.8"
+  }
+}
