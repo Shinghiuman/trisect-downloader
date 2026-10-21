@@ -2,6 +2,18 @@
 
 同时支持 **BitTorrent/磁力、eD2K、HTTP(S)** 三种协议的下载管理器，Web 版与 Windows 桌面版（Electron）双形态。
 
+## 界面预览
+
+<p align="center">
+  <img src="test/shots/packaged-02-downloading.png" width="840" alt="下载中：BT 任务 25.3% / 21.9 MB/s">
+  <br><sub>桌面版：BT 任务传输中（25.3%，21.9 MB/s，节点 1）</sub>
+</p>
+
+<p align="center">
+  <img src="test/shots/packaged-03-completed.png" width="840" alt="已完成：512 MB 校验通过">
+  <br><sub>同一任务完成：512.0 / 512.0 MB，落盘文件 SHA1 与源文件一致</sub>
+</p>
+
 ## 三种协议的真实性说明
 
 | 协议 | 引擎 | 是否真实传输 |

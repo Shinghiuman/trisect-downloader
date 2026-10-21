@@ -19,6 +19,7 @@ test/pure-dl/
 
 # 测试种子数据（体积大，可用 test/swarm.js 重新生成）
 test/out/seed-data/
+test/out/pure-dl/
 test/out2/
 test/out3/
 
